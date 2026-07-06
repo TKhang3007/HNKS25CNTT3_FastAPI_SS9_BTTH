@@ -6,6 +6,7 @@ from pydantic import BaseModel
 DATABASE_URL = "mysql+pymysql://root:khang30072007@localhost:3306/ecommerce_db"
 
 engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
@@ -55,4 +56,15 @@ def create_shipment(shipment: ShipmentCreate,db: Session = Depends(get_db)):
     return {
         "message": "Tạo vận đơn thành công",
         "data": new_shipment
+    }
+
+@app.get("/shipments", status_code=status.HTTP_200_OK)
+def get_all_shipments(
+    db: Session = Depends(get_db)
+):
+    shipments = db.query(ShipmentModel).all()
+
+    return {
+        "message": "Danh sách vận đơn",
+        "data": shipments
     }
